@@ -7,6 +7,7 @@ import Adafruit_DHT
 from datetime import datetime
 import matplotlib
 import matplotlib.pyplot as plt
+import os
 
 #############################################
 "INPUT SECTION"
@@ -16,8 +17,8 @@ delay = 10                                  #interval of recording data (in seco
 
 """Change filename"""
 
-filename = "Finaltest"                      #<< Change the filename
-
+filename = "Readings"                      #<< Change the filename
+filename = filename + "_" + time.strftime('%Y-%m-%d_%H_%M', time.localtime());
 """Change filename"""
 
 #############################################
@@ -119,14 +120,23 @@ def weather():
         """Change the schedule only if you are mindful of data processing"""
         """e.g at the 15/30/45th minute of every hour works too."""
         """Any other denomination would be tedious though i.e last 3 options"""
-
-##        schedule.every().hour.at(":30").do(recording)
-#         schedule.every().hour.at(":00").do(recording)
+        schedule.every().hour.at(":00").do(recording)
+        schedule.every().hour.at(":05").do(recording)
+        schedule.every().hour.at(":10").do(recording)
+        schedule.every().hour.at(":15").do(recording)
+        schedule.every().hour.at(":20").do(recording)
+        schedule.every().hour.at(":25").do(recording)
+        schedule.every().hour.at(":30").do(recording)
+        schedule.every().hour.at(":35").do(recording)
+        schedule.every().hour.at(":40").do(recording)
+        schedule.every().hour.at(":45").do(recording)
+        schedule.every().hour.at(":50").do(recording)
+        schedule.every().hour.at(":55").do(recording)
         
         print("recording data...")
 #         schedule.every(1).minutes.do(recording)
 ##        schedule.every().day.do(recording)
-        schedule.every(5).seconds.do(recording)
+        #schedule.every(5).seconds.do(recording)
         while True:
             schedule.run_pending()
             time.sleep(1)
@@ -161,6 +171,9 @@ def recording():
         f.write(data_pt)
         print(m)
         print("Hour= {:1} PM2.5= {:1.2f}ug/m^3 PM10= {:1.2f}ug/m^3 Temp= {:1.2f}*C  Humidity= {:1.2f}%".format(h, values[0],values[1],temperature,humidity))
+        f.flush();
+        os.fsync(f.fileno()); #paranoia
+        f.close()
         time.sleep(delay)
     elif values is None:
         print("Problem occurred with Air Quality sensor")
